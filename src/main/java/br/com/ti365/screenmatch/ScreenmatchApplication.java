@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import br.com.ti365.screenmatch.model.EpisodesData;
 import br.com.ti365.screenmatch.model.SeriesData;
 import br.com.ti365.screenmatch.service.ApiConsumer;
 import br.com.ti365.screenmatch.service.DataConverterImplementation;
@@ -24,6 +25,9 @@ public class ScreenmatchApplication implements CommandLineRunner{
 		DataConverterInterface converter = new DataConverterImplementation();
 		SeriesData seriesData = converter.getData(json, SeriesData.class);
 		System.out.println(seriesData);
+		json = apiConsumer.getApiData("https://www.omdbapi.com/?t=gilmore+girls&season=1&episode=2&apikey=cf34e04");
+		EpisodesData episodeData = converter.getData(json, EpisodesData.class);
+		System.out.println(episodeData);
 		
 	}
 
