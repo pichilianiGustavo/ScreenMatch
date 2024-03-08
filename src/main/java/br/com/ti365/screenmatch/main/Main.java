@@ -33,5 +33,13 @@ public class Main {
 			seasons.add(seasonsData);
 		}
 		seasons.forEach(System.out::println);
+		
+//		for (int i = 0; i < seriesData.seasons(); i++) {
+//			List<EpisodesData> episodesSeason = seasons.get(i).episodes();
+//			for (int j = 0; j < episodesSeason.size(); j++) {
+//				System.out.println(episodesSeason.get(j).title());
+//			}
+//		}
+		seasons.forEach(s -> s.episodes().forEach(e -> System.out.println(e.title())));
 	}
 }
