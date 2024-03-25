@@ -1,11 +1,14 @@
 package br.com.ti365.screenmatch.service;
 
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import br.com.ti365.screenmatch.service.interfaces.DataConverterInterface;
 
+@Service
 public class DataConverterImplementation implements DataConverterInterface {
 
 	private ObjectMapper mapper = new ObjectMapper();
