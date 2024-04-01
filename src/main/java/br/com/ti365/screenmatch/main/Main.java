@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import br.com.ti365.screenmatch.model.SeasonsData;
+import br.com.ti365.screenmatch.model.Series;
 import br.com.ti365.screenmatch.model.SeriesData;
 import br.com.ti365.screenmatch.service.ApiConsumer;
 import br.com.ti365.screenmatch.service.DataConverterImplementation;
@@ -17,61 +18,76 @@ public class Main {
 	private final String APIKEY = "&apikey=cf34e04";
 	private ApiConsumer apiConsumer = new ApiConsumer();
 	private DataConverterInterface converter = new DataConverterImplementation();
+	private List<SeriesData> seriesDataList = new ArrayList<>();
 
 	public void showMenu() {
-		var menu = """
-				1 - Buscar Séries
-				2 - Buscar Episódios
+		var chosenOption = -1;
+		while (chosenOption != 0) {
 
-				0 - Sair
-				""";
+			var menu = """
+					\nEscolha uma das opções abaixo:
+					\n1 - Buscar Séries
+					2 - Buscar Episódios
+					3 - Listar séries pesquisadas
 
-		System.out.println(menu);
-		var chosenOption = scanner.nextInt();
-		scanner.nextLine();
+					0 - Sair
+					""";
 
-		switch (chosenOption) {
-		case 1: {
-			searchSeries();
-			break;
-		}
-		case 2: {
-			searchEpisodesPerSeries();
-			break;
-		}
-		case 0: {
-			System.out.println("Saindo...");
-			break;
-		}
-		default:
-			throw new IllegalArgumentException("Opção Inválida: " + chosenOption);
-		}
+			System.out.println(menu);
+			chosenOption = scanner.nextInt();
+			scanner.nextLine();
 
+			switch (chosenOption) {
+			case 1: {
+				searchSeries();
+				break;
+			}
+			case 2: {
+				searchEpisodesPerSeries();
+				break;
+			}
+			case 3: {
+				listSearchedSeries();
+				break;
+			}
+			case 0: {
+				System.out.println("Saindo...");
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Opção Inválida: " + chosenOption);
+			}
+		}
 	}
 
 	private void searchSeries() {
-        SeriesData seriesData = getSeriesData();
-        System.out.println(seriesData);
-    }
-    
-    private SeriesData getSeriesData() {
-        System.out.println("Digite o nome da série para busca");
-        var nomeSerie = scanner.nextLine();
-        var json = apiConsumer.getApiData(BASEURL + nomeSerie.replace(" ", "+") + APIKEY);
-        SeriesData seriesData = converter.getData(json, SeriesData.class);
-        return seriesData;
-    }
-    
-    private void searchEpisodesPerSeries() {
-    	SeriesData dadosSerie = getSeriesData();
-        List<SeasonsData> seasons = new ArrayList<>();
-
-        for (int i = 1; i <= dadosSerie.seasons(); i++) {
-            var json = apiConsumer.getApiData(BASEURL+ dadosSerie.title().replace(" ", "+") + "&season=" + i + APIKEY);
-            SeasonsData seasonsData = converter.getData(json, SeasonsData.class);
-            seasons.add(seasonsData);
-        }
-        seasons.forEach(System.out::println);		
+		SeriesData seriesData = getSeriesData();
+		seriesDataList.add(seriesData);
+		Series series = new Series(seriesData);
+		System.out.println(series);
 	}
 
+	private SeriesData getSeriesData() {
+		System.out.println("Digite o nome da série que deseja pesquisar: ");
+		var nomeSerie = scanner.nextLine();
+		var json = apiConsumer.getApiData(BASEURL + nomeSerie.replace(" ", "+") + APIKEY);
+		SeriesData seriesData = converter.getDeserializedData(json, SeriesData.class);
+		return seriesData;
+	}
+
+	private void searchEpisodesPerSeries() {
+		SeriesData dadosSerie = getSeriesData();
+		List<SeasonsData> seasons = new ArrayList<>();
+
+		for (int i = 1; i <= dadosSerie.seasons(); i++) {
+			var json = apiConsumer.getApiData(BASEURL + dadosSerie.title().replace(" ", "+") + "&season=" + i + APIKEY);
+			SeasonsData seasonsData = converter.getDeserializedData(json, SeasonsData.class);
+			seasons.add(seasonsData);
+		}
+		seasons.forEach(System.out::println);
+	}
+	
+	private void listSearchedSeries() {
+		seriesDataList.forEach(System.out::println);
+	}	
 }
