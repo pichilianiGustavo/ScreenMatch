@@ -17,10 +17,5 @@ public enum Category {
 		}
 		throw new IllegalArgumentException("Nenhuma categoria encontrada para a string fornecida: " + text);
 	}
-	
-	@Override
-	public String toString() {
-		return this.categoryOmdb;
-	}
 
 }

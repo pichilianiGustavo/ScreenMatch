@@ -26,4 +26,18 @@ public class Series {
 		this.plot = seriesData.plot();
 		this.posterUrl = seriesData.posterUrl();
 	}
+
+	@Override
+	public String toString() {
+	    return "Serie{" +
+	           "genero=" + genre +
+	           ", titulo='" + title + '\'' +
+	           ", totalTemporadas=" + seasons +
+	           ", avaliacao=" + rating +
+	           ", atores='" + rating + '\'' +
+	           ", poster='" + posterUrl + '\'' +
+	           ", sinopse'" + plot + '\'' +
+	           '}';
+	}
+	
 }

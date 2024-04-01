@@ -3,6 +3,7 @@ package br.com.ti365.screenmatch.main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import br.com.ti365.screenmatch.model.SeasonsData;
 import br.com.ti365.screenmatch.model.Series;
@@ -65,6 +66,7 @@ public class Main {
 		seriesDataList.add(seriesData);
 		Series series = new Series(seriesData);
 		System.out.println(series);
+		System.out.println(seriesDataList);
 	}
 
 	private SeriesData getSeriesData() {
@@ -88,6 +90,9 @@ public class Main {
 	}
 	
 	private void listSearchedSeries() {
-		seriesDataList.forEach(System.out::println);
+		List<Series> seriesList = new ArrayList<Series>();
+		seriesList = seriesDataList.stream().map(d -> new Series(d)).collect(Collectors.toList());
+		seriesList.stream()
+		.forEach(System.out::println);
 	}	
 }
