@@ -3,9 +3,9 @@ package br.com.ti365.screenmatch.main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import br.com.ti365.screenmatch.model.SeasonsData;
 import br.com.ti365.screenmatch.model.Series;
@@ -19,7 +19,8 @@ public class Main {
 
 	private Scanner scanner = new Scanner(System.in);
 	private final String BASEURL = "https://www.omdbapi.com/?t=";
-	private final String APIKEY = "&apikey=cf34e04";
+	@Value("${omdb.api.key}")
+	private String APIKEY;
 	private ApiConsumer apiConsumer = new ApiConsumer();
 	private DataConverterInterface converter = new DataConverterImplementation();
 	private List<SeriesData> seriesDataList = new ArrayList<>();
