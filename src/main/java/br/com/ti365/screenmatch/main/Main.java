@@ -5,34 +5,38 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
 import br.com.ti365.screenmatch.model.SeasonsData;
 import br.com.ti365.screenmatch.model.Series;
 import br.com.ti365.screenmatch.model.SeriesData;
+import br.com.ti365.screenmatch.properties.OmdbApiProperties;
 import br.com.ti365.screenmatch.repository.SeriesRepository;
 import br.com.ti365.screenmatch.service.ApiConsumer;
-import br.com.ti365.screenmatch.service.DataConverterImplementation;
 import br.com.ti365.screenmatch.service.interfaces.DataConverterInterface;
 
-public class Main {
+@Component
+public class Main implements ApplicationRunner {
 
 	private Scanner scanner = new Scanner(System.in);
 	private final String BASEURL = "https://www.omdbapi.com/?t=";
-	private final String APIKEY = "&apikey=cf34e04";
-	private ApiConsumer apiConsumer = new ApiConsumer();
-	private DataConverterInterface converter = new DataConverterImplementation();
 	private List<SeriesData> seriesDataList = new ArrayList<>();
 	@Autowired
+	private ApiConsumer apiConsumer;
+	@Autowired
+	private DataConverterInterface converter;
+	@Autowired
 	private SeriesRepository seriesRepository;
-
-	public Main(SeriesRepository seriesRepository) {
-		this.seriesRepository = seriesRepository;
-	}
+	@Autowired
+	private OmdbApiProperties omdbApiProperties;
 
 	public void showMenu() {
 		var chosenOption = -1;
 		while (chosenOption != 0) {
 
+			System.out.println(omdbApiProperties.getKey());
 			var menu = """
 					\nEscolha uma das opções abaixo:
 					\n1 - Buscar Séries
@@ -82,7 +86,7 @@ public class Main {
 	private SeriesData getSeriesData() {
 		System.out.println("Digite o nome da série que deseja pesquisar: ");
 		var nomeSerie = scanner.nextLine();
-		var json = apiConsumer.getApiData(BASEURL + nomeSerie.replace(" ", "+") + APIKEY);
+		var json = apiConsumer.getApiData(BASEURL + nomeSerie.replace(" ", "+") + "&apikey=" +omdbApiProperties.getKey());
 		SeriesData seriesData = converter.getDeserializedData(json, SeriesData.class);
 		return seriesData;
 	}
@@ -92,7 +96,7 @@ public class Main {
 		List<SeasonsData> seasons = new ArrayList<>();
 
 		for (int i = 1; i <= dadosSerie.seasons(); i++) {
-			var json = apiConsumer.getApiData(BASEURL + dadosSerie.title().replace(" ", "+") + "&season=" + i + APIKEY);
+			var json = apiConsumer.getApiData(BASEURL + dadosSerie.title().replace(" ", "+") + "&season=" + i + "&apikey=" +omdbApiProperties.getKey());
 			SeasonsData seasonsData = converter.getDeserializedData(json, SeasonsData.class);
 			seasons.add(seasonsData);
 		}
@@ -105,4 +109,10 @@ public class Main {
 		seriesList.stream()
 		.forEach(System.out::println);
 	}	
+	
+    // Implement the ApplicationRunner interface
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        showMenu();
+    }
 }
