@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import br.com.ti365.screenmatch.model.SeasonsData;
 import br.com.ti365.screenmatch.model.Series;
 import br.com.ti365.screenmatch.model.SeriesData;
+import br.com.ti365.screenmatch.repository.SeriesRepository;
 import br.com.ti365.screenmatch.service.ApiConsumer;
 import br.com.ti365.screenmatch.service.DataConverterImplementation;
 import br.com.ti365.screenmatch.service.interfaces.DataConverterInterface;
@@ -20,6 +23,12 @@ public class Main {
 	private ApiConsumer apiConsumer = new ApiConsumer();
 	private DataConverterInterface converter = new DataConverterImplementation();
 	private List<SeriesData> seriesDataList = new ArrayList<>();
+	@Autowired
+	private SeriesRepository seriesRepository;
+
+	public Main(SeriesRepository seriesRepository) {
+		this.seriesRepository = seriesRepository;
+	}
 
 	public void showMenu() {
 		var chosenOption = -1;
@@ -63,9 +72,11 @@ public class Main {
 
 	private void searchSeries() {
 		SeriesData seriesData = getSeriesData();
-		seriesDataList.add(seriesData);
+		//seriesDataList.add(seriesData);
 		Series series = new Series(seriesData);
+		seriesRepository.save(series);
 		System.out.println(series);
+		
 		System.out.println(seriesDataList);
 	}
 
