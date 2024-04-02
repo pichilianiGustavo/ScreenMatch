@@ -102,7 +102,7 @@ public class Main {
 	
 	private void listSearchedSeries() {
 		List<Series> seriesList = new ArrayList<Series>();
-		seriesList = seriesDataList.stream().map(d -> new Series(d)).collect(Collectors.toList());
+		seriesList = seriesRepository.findAll();
 		seriesList.stream()
 		.forEach(System.out::println);
 	}	

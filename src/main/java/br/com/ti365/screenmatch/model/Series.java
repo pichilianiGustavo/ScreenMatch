@@ -17,10 +17,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "Series")
 @Data
+@NoArgsConstructor
 public class Series {
 	
 	@Id
@@ -44,7 +46,7 @@ public class Series {
 	private String posterUrl;
 	@Transient
 	private List<Episodes> episodios = new ArrayList<Episodes>();
-
+	
 	public Series(SeriesData seriesData) {
 		this.title = seriesData.title();
 		this.seasons = seriesData.seasons();
